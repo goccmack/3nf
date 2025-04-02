@@ -118,36 +118,59 @@ func getFields(entity *ast.Entity) (fields []string) {
 }
 
 func getForeignKeys(entity *ast.Entity, schema *ast.Schema) (fks []string, relations map[string]bool) {
-	// key of fkMap is foreign entity name
-	fkMap := make(map[string]*ForeignKey)
 	relations = make(map[string]bool)
 
 	for _, a := range entity.Attributes.Attributes {
 		if a.ForeignKey != nil {
 			toTable := a.ForeignKey.Entity.Name
-			fk, exist := fkMap[toTable]
-			if !exist {
-				fk = &ForeignKey{
-					ToTable: fmt.Sprintf(`"%s"."%s"`, schema.Name.Name, toTable),
-				}
-				fkMap[toTable] = fk
+			fk := &ForeignKey{
+				ToTable: fmt.Sprintf(`"%s"."%s"`, schema.Name.Name, toTable),
 			}
 			fk.FromFields = append(fk.FromFields, `"`+a.Attribute.Name+`"`)
 			fk.ToFields = append(fk.ToFields, `"`+a.ForeignKey.Field.Name+`"`)
+			str := fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s)",
+				strings.Join(fk.FromFields, ","), fk.ToTable, strings.Join(fk.ToFields, ","))
+			fks = append(fks, str)
 			relations[toTable] = true
 		}
-	}
-
-	for _, fk := range fkMap {
-		str := fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s)",
-			strings.Join(fk.FromFields, ","), fk.ToTable, strings.Join(fk.ToFields, ","))
-		fks = append(fks, str)
 	}
 
 	sort.Strings(fks)
 
 	return
 }
+
+// func getForeignKeys(entity *ast.Entity, schema *ast.Schema) (fks []string, relations map[string]bool) {
+// 	// key of fkMap is foreign entity name
+// 	fkMap := make(map[string]*ForeignKey)
+// 	relations = make(map[string]bool)
+
+// 	for _, a := range entity.Attributes.Attributes {
+// 		if a.ForeignKey != nil {
+// 			toTable := a.ForeignKey.Entity.Name
+// 			fk, exist := fkMap[toTable]
+// 			if !exist {
+// 				fk = &ForeignKey{
+// 					ToTable: fmt.Sprintf(`"%s"."%s"`, schema.Name.Name, toTable),
+// 				}
+// 				fkMap[toTable] = fk
+// 			}
+// 			fk.FromFields = append(fk.FromFields, `"`+a.Attribute.Name+`"`)
+// 			fk.ToFields = append(fk.ToFields, `"`+a.ForeignKey.Field.Name+`"`)
+// 			relations[toTable] = true
+// 		}
+// 	}
+
+// 	for _, fk := range fkMap {
+// 		str := fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s)",
+// 			strings.Join(fk.FromFields, ","), fk.ToTable, strings.Join(fk.ToFields, ","))
+// 		fks = append(fks, str)
+// 	}
+
+// 	sort.Strings(fks)
+
+// 	return
+// }
 
 func getPKComma(tbl *Table) bool {
 	return len(tbl.ForeignKeys) > 0
