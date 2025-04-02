@@ -8,7 +8,6 @@ import (
 
 	"github.com/goccmack/3nf/ast"
 	"github.com/goccmack/3nf/gen/dot"
-	"github.com/goccmack/3nf/gen/mmd"
 	"github.com/goccmack/3nf/gen/sql"
 	"github.com/goccmack/3nf/lexer"
 	"github.com/goccmack/3nf/parser"
@@ -29,7 +28,6 @@ func main() {
 	}
 	schema := ast.Build(pf, lex, ermFile)
 	schema.Check()
-	mmd.Gen(ermDir, schema)
 	sql.Gen(ermDir, schema)
 	dot.Gen(ermDir, schema)
 }

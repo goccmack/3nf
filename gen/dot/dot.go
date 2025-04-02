@@ -20,7 +20,7 @@ type Data struct {
 type Relation struct {
 	LEntity string
 	LCard   string
-	RCard   string
+	// RCard   string
 	REntity string
 }
 
@@ -71,9 +71,12 @@ func getRelation(
 	rel := &Relation{
 		LEntity: fromTable,
 		REntity: toTable,
-		RCard:   getRightCardinality(s, fromTable, c.FromAttribute),
-		LCard:   getLeftCardinality(s, toTable, c.ToAttribute),
+		// RCard:   getRightCardinality(s, fromTable, c.FromAttribute),
+		LCard: getLeftCardinality(s, fromTable, c.FromAttribute),
 	}
+
+	// unique, _ := s.GetCardinality(fromTable, c.FromAttribute)
+	// fmt.Printf("%s.%s->%s %t\n", fromTable, c.FromAttribute, toTable, unique)
 
 	return rel
 }
@@ -88,27 +91,31 @@ func getEntityRelations(e *ast.Entity, s *ast.Schema) (rels []*Relation) {
 }
 
 func getLeftCardinality(s *ast.Schema, fromTable, fromField string) string {
-	unique, nullable := s.GetCardinality(fromTable, fromField)
-	switch {
-	case unique && nullable:
-		return "|o"
-	case unique && !nullable:
-		return "||"
-	case !unique && nullable:
-		return "}o"
-	case !unique && !nullable:
-		return "}|"
+	unique, _ := s.GetCardinality(fromTable, fromField)
+	if unique {
+		return "tee"
 	}
-	panic("invalid")
+	return "crow"
+	// switch {
+	// case unique && nullable:
+	// 	return "|o"
+	// case unique && !nullable:
+	// 	return "||"
+	// case !unique && nullable:
+	// 	return "}o"
+	// case !unique && !nullable:
+	// 	return "}|"
+	// }
+	// panic("invalid")
 }
 
-func getRightCardinality(s *ast.Schema, fromTable, fromField string) string {
-	_, nullable := s.GetCardinality(fromTable, fromField)
-	if nullable {
-		return "o|"
-	}
-	return "||"
-}
+// func getRightCardinality(s *ast.Schema, fromTable, fromField string) string {
+// 	_, nullable := s.GetCardinality(fromTable, fromField)
+// 	if nullable {
+// 		return "o|"
+// 	}
+// 	return "||"
+// }
 
 // const mmdTemplate = `erDiagram
 // {{range $r := $.Relations}}
@@ -123,7 +130,7 @@ node [shape=box];
 "{{$t}}"; {{end}}
 
 {{range $r := $.Relations}}
-edge [dir=both arrowtail=crow arrowhead=tee]
+edge [dir=both arrowtail={{$r.LCard}} arrowhead=tee]
 "{{$r.LEntity}}" -> "{{$r.REntity}}"
 {{end}}
 }`
