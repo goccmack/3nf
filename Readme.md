@@ -134,4 +134,4 @@ You need a [Go installation](https://go.dev/)
 
 ## Installing 3nf
 
-`go install github.com/goccmack/3nf`
+`go install github.com/goccmack/3nf@latest`
