@@ -1,4 +1,4 @@
-# ERM Grammar
+# 3NF Grammar
 ```
 package "github.com/goccmack/3nf"
 

@@ -39,7 +39,7 @@ func getParams() {
 		os.Exit(0)
 	}
 	if flag.NArg() != 1 {
-		fmt.Println("Error: exactly 1 ERM file must be specified")
+		fmt.Println("Error: exactly 1 data model must be specified")
 		fmt.Print(usage)
 		os.Exit(1)
 	}
@@ -59,16 +59,4 @@ func parseErrors(fname string, errs []*parser.Error) {
 	os.Exit(1)
 }
 
-const usage = `use smg [-vh] [src-dir]
-
-    src-dir Directory where the root of the state machine resides.
-            Optional. Default: current working directory
-
-    -h  Print this help.
-        Optional. Default off.
-
-    -v  Generate verbose output, including:
-        states-and-transitions.txt
-        Optional. Default off.
-        
-    -version  Print the version of this compiler`
+const usage = `use 3nf <path to model file>`

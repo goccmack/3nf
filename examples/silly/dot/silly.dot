@@ -1,0 +1,20 @@
+digraph silly {
+node [shape=box];
+
+
+"actor"; 
+"movie"; 
+"movie_actor"; 
+"silly_type"; 
+
+
+edge [dir=both arrowtail=crow arrowhead=tee]
+"movie" -> "silly_type"
+
+edge [dir=both arrowtail=crow arrowhead=tee]
+"movie_actor" -> "actor"
+
+edge [dir=both arrowtail=crow arrowhead=tee]
+"movie_actor" -> "movie"
+
+}

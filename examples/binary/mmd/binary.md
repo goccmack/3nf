@@ -1,5 +1,0 @@
-```mermaid
-erDiagram
-
-
-table1 {} 
