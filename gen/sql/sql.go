@@ -243,7 +243,7 @@ func sqlType(a *ast.AttributeDeclaration) string {
 	case ast.TextType:
 		return "text"
 	case ast.TimeType:
-		return "time"
+		return "timestamp"
 	}
 	panic(fmt.Sprintf("Invalid type %d", a.Type.Type))
 }

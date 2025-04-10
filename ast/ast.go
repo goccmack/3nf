@@ -59,6 +59,7 @@ const (
 	SerialType
 	TextType
 	TimeType
+	TimeStampType
 )
 
 type Description struct {

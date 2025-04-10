@@ -91,6 +91,9 @@ TypeName
     |   "text"
     |   "time"
     ;
+```
+`time` => `timestamp`
+```
 
 Unique : "unique" ;
 
